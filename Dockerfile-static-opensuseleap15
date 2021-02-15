@@ -1,0 +1,28 @@
+FROM docker.io/opensuse/leap:15 AS builder
+COPY \
+    scripts/add_nonroot.sh \
+    scripts/add_nsswitch.sh \
+    scripts/add_users_and_groups.sh \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/rpm_extract_packages.sh \
+    scripts/zypper_download_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/zypper_download_packages.sh \
+        ca-certificates \
+        filesystem \
+        netcfg \
+        openSUSE-release \
+        timezone \
+    && /tmp/rpm_extract_packages.sh \
+    && /tmp/add_users_and_groups.sh \
+    && /tmp/add_nonroot.sh \
+    && /tmp/add_nsswitch.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM scratch
+COPY --from=builder /tmp/copy ./
+ENV SSL_CERT_FILE=/etc/ssl/ca-bundle.pem
+USER 0:0
+WORKDIR /

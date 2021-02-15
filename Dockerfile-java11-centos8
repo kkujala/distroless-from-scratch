@@ -1,0 +1,32 @@
+FROM localhost/distroless-from-scratch/cc-centos8:latest as base
+
+FROM docker.io/centos:centos8 AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy
+COPY \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/link_java_executable.sh \
+    scripts/rpm_extract_packages.sh \
+    scripts/yum_download_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/yum_download_packages.sh \
+        freetype.x86_64 \
+        glibc-common.x86_64 \
+        java-11-openjdk-headless.x86_64 \
+        javapackages-filesystem.noarch \
+        lcms2.x86_64 \
+        libjpeg-turbo.x86_64 \
+        libpng.x86_64 \
+        tzdata-java.noarch \
+        zlib.x86_64 \
+    && /tmp/rpm_extract_packages.sh \
+    && /tmp/link_java_executable.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/cc-centos8:latest
+COPY --from=builder /tmp/copy ./
+ENTRYPOINT ["/usr/bin/java", "-jar"]
+ENV JAVA_VERSION=11
+ENV LANG=C.UTF-8

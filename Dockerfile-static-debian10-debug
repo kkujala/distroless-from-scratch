@@ -1,0 +1,22 @@
+FROM localhost/distroless-from-scratch/static-debian10:latest as base
+
+FROM docker.io/debian:10.7-slim AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy
+COPY \
+    scripts/apt_download_packages.sh \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/dpkg_extract_packages.sh \
+    scripts/link_busybox.sh \
+    /tmp
+RUN : \
+    && /tmp/apt_download_packages.sh \
+        busybox-static \
+    && /tmp/dpkg_extract_packages.sh \
+    && /tmp/link_busybox.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/static-debian10:latest
+COPY --from=builder /tmp/copy ./
+ENTRYPOINT ["/bin/sh"]

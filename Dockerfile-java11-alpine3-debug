@@ -1,0 +1,25 @@
+FROM localhost/distroless-from-scratch/java-alpine3:11 as base
+
+FROM docker.io/alpine:3 AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy/
+COPY \
+    scripts/apk_download_packages.sh \
+    scripts/apk_install_packages.sh \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/link_busybox.sh \
+    scripts/tar_extract_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/apk_install_packages.sh \
+        bash \
+    && /tmp/apk_download_packages.sh \
+        busybox-static \
+        openjdk11-jdk \
+    && /tmp/tar_extract_packages.sh \
+    && /tmp/link_busybox.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/java-alpine3:11
+COPY --from=builder /tmp/copy ./

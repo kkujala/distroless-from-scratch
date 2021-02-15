@@ -1,0 +1,27 @@
+FROM localhost/distroless-from-scratch/cc-centos8:latest as base
+
+FROM docker.io/centos:centos8 AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy
+COPY \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/rpm_extract_packages.sh \
+    scripts/yum_download_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/yum_download_packages.sh \
+        brotli.x86_64 \
+        c-ares.x86_64 \
+        libatomic.x86_64 \
+        libicu.x86_64 \
+        libuv.x86_64 \
+        nodejs.x86_64 \
+        npm.x86_64 \
+        zlib.x86_64 \
+    && /tmp/rpm_extract_packages.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/cc-centos8:latest
+COPY --from=builder /tmp/copy ./
+ENTRYPOINT ["/usr/bin/node"]

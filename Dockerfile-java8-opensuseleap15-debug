@@ -1,0 +1,22 @@
+FROM localhost/distroless-from-scratch/java-opensuseleap15:8 as base
+
+FROM docker.io/opensuse/leap:15 AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy
+COPY \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/link_busybox.sh \
+    scripts/rpm_extract_packages.sh \
+    scripts/zypper_download_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/zypper_download_packages.sh \
+        busybox-static \
+        java-1_8_0-openjdk-devel \
+    && /tmp/rpm_extract_packages.sh \
+    && /tmp/link_busybox.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/java-opensuseleap15:8
+COPY --from=builder /tmp/copy ./

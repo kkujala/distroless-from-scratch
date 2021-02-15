@@ -1,0 +1,21 @@
+FROM localhost/distroless-from-scratch/static-opensuseleap15:latest as base
+
+FROM docker.io/opensuse/leap:15 AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy
+COPY \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/rpm_extract_packages.sh \
+    scripts/zypper_download_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/zypper_download_packages.sh \
+        glibc \
+        libopenssl1_1 \
+        openssl-1_1 \
+    && /tmp/rpm_extract_packages.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/static-opensuseleap15:latest
+COPY --from=builder /tmp/copy ./

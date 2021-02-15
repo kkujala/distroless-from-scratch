@@ -1,0 +1,29 @@
+FROM docker.io/alpine:3 AS builder
+COPY \
+    scripts/add_nonroot.sh \
+    scripts/add_users_and_groups.sh \
+    scripts/apk_download_packages.sh \
+    scripts/apk_install_packages.sh \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/tar_extract_packages.sh \
+    /tmp
+RUN : \
+    && /tmp/apk_install_packages.sh \
+        bash \
+    && /tmp/apk_download_packages.sh \
+        alpine-base \
+        alpine-baselayout \
+        ca-certificates \
+        ca-certificates-bundle \
+        tzdata \
+    && /tmp/tar_extract_packages.sh \
+    && /tmp/add_users_and_groups.sh \
+    && /tmp/add_nonroot.sh \
+    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM scratch
+COPY --from=builder /tmp/copy ./
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+USER 0:0
+WORKDIR /
