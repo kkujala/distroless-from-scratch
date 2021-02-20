@@ -133,8 +133,8 @@ are pinned down.
 
 ### What one needs to know before using the `Dockerfiles`
 
-Please, have a look at the [COPYRIGHT](COPYRIGHT.txt), and
-[LICENSE](LICENSE.txt).
+Please, have a look at the [COPYRIGHT](COPYRIGHT.md), and
+[LICENSE](LICENSE.md).
 
 ### `CMD` `Dockerfile` build command
 
