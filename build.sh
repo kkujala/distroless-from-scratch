@@ -31,7 +31,7 @@ for os in "${oss[@]}"; do
 
     for image in "${images[@]}"; do
         for tag in "${tags[@]}"; do
-            dockerfile="Dockerfile-${image}"
+            dockerfile=dockerfiles/"Dockerfile-${image}"
             if [[ "${tag}" != latest ]]; then
                 dockerfile="${dockerfile}-${tag}"
             fi

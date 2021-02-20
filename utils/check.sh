@@ -3,8 +3,8 @@ set -euo pipefail
 
 function process() {
     local dockerfile=
-    dockerfile="${1}"
-    file_name=/tmp/"${dockerfile}".sh
+    dockerfile="${1#*/}"
+    file_name=/tmp/"${dockerfile////-}".sh
 
     echo "Processing ${dockerfile} as ${file_name}"
 
