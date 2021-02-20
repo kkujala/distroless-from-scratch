@@ -136,11 +136,12 @@ are pinned down.
 Please, have a look at the [COPYRIGHT](COPYRIGHT.md), and
 [LICENSE](LICENSE.md).
 
-### `CMD` `Dockerfile` build command
+### `CMD` build command in `Dockerfile`
 
-It should use `["/path/to/file", "argument"]` notation.
+It should be with `["/path/to/file", "argument"]` notation.
 
-For java images it should be `["/path/to/java/package", "argument"]`.
+For java images it should be with `["/path/to/java/package", "argument"]`
+notation.
 
 ## Package metadata
 
