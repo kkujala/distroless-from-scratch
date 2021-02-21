@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+
 oss=(
     alpine3
     centos8
@@ -31,7 +33,7 @@ for os in "${oss[@]}"; do
 
     for image in "${images[@]}"; do
         for tag in "${tags[@]}"; do
-            dockerfile=dockerfiles/"Dockerfile-${image}"
+            dockerfile="${repo_dir}/dockerfiles/Dockerfile-${image}"
             if [[ "${tag}" != latest ]]; then
                 dockerfile="${dockerfile}-${tag}"
             fi
@@ -56,7 +58,7 @@ for os in "${oss[@]}"; do
                 --layers=true \
                 --tag="${image_tag}" \
                 --timestamp=0 \
-                .
+                "${repo_dir}"
         done
     done
 done

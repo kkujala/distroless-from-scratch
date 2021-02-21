@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+repo_dir="$(cd "${script_dir}/.." >/dev/null 2>&1 && pwd -P)"
+
 function process() {
     local dockerfile=
     dockerfile="${1#*/}"
@@ -33,12 +36,16 @@ function check_file() {
 export -f process
 export -f check_file
 
-find . \
-    -type f \
-    -name 'Dockerfile-*' \
-    -exec bash -c 'process "${1}"' _ {} \;
+(
+    cd "${repo_dir}"
 
-find . \
-    -type f \
-    -name '*.sh' \
-    -exec bash -c 'check_file "${1}"' _ {} \;
+    find . \
+        -type f \
+        -name 'Dockerfile-*' \
+        -exec bash -c 'process "${1}"' _ {} \;
+
+    find . \
+        -type f \
+        -name '*.sh' \
+        -exec bash -c 'check_file "${1}"' _ {} \;
+)
