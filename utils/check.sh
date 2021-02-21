@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
 repo_dir="$(cd "${script_dir}/.." >/dev/null 2>&1 && pwd -P)"
@@ -13,7 +13,7 @@ function process() {
 
     {
         echo '#!/usr/bin/env bash'
-        echo 'set -euo pipefail'
+        echo 'set -Eeuo pipefail'
     } > "${file_name}"
 
     sed --quiet '/RUN :/,/&& :/p' "${dockerfile}" \
