@@ -33,19 +33,26 @@ function check_file() {
     shellcheck "${file_name}"
 }
 
-export -f process
-export -f check_file
-
 (
     cd "${repo_dir}"
 
-    find . \
-        -type f \
-        -name 'Dockerfile-*' \
-        -exec bash -c 'process "${1}"' _ {} \;
+    mapfile -t dockerfiles < <(
+        find . \
+            -type f \
+            -name 'Dockerfile-*'
+    )
 
-    find . \
-        -type f \
-        -name '*.sh' \
-        -exec bash -c 'check_file "${1}"' _ {} \;
+    for dockerfile in "${dockerfiles[@]}"; do
+        process "${dockerfile}"
+    done
+
+    mapfile -t scriptfiles < <(
+        find . \
+            -type f \
+            -name '*.sh'
+    )
+
+    for scriptfile in "${scriptfiles[@]}"; do
+        check_file "${scriptfile}"
+    done
 )
