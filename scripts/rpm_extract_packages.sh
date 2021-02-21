@@ -38,11 +38,12 @@ function process() {
     store_package_data "${package}"
 }
 
-export -f extract
-export -f store_package_data
-export -f process
+mapfile -t packages < <(
+    find /tmp \
+        -type f \
+        -name '*.rpm'
+)
 
-find /tmp \
-    -type f \
-    -name '*.rpm' \
-    -exec bash -c 'process "${1}"' _ {} \;
+for package in "${packages[@]}"; do
+    process "${package}"
+done

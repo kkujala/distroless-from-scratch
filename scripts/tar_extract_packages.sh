@@ -39,13 +39,14 @@ function process() {
     store_package_data "${package}"
 }
 
-export -f extract
-export -f store_package_data
-export -f process
+mapfile -t packages < <(
+    find /tmp \
+        -mindepth 1 \
+        -maxdepth 1 \
+        -type f \
+        -name '*.apk'
+)
 
-find /tmp \
-    -mindepth 1 \
-    -maxdepth 1 \
-    -type f \
-    -name '*.apk' \
-    -exec bash -c 'process "${1}"' _ {} \;
+for package in "${packages[@]}"; do
+    process "${package}"
+done

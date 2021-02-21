@@ -13,7 +13,10 @@ function process() {
         "${file_name}"
 }
 
-export -f process
+mapfile -t file_names < <(
+    find /tmp/copy
+)
 
-find /tmp/copy \
-    -exec bash -c 'process "${1}"' _ {} \;
+for file_name in "${file_names[@]}"; do
+    process "${file_name}"
+done

@@ -34,13 +34,14 @@ function process() {
     store_package_data "${package}"
 }
 
-export -f extract
-export -f store_package_data
-export -f process
+mapfile -t packages < <(
+    find /tmp/cache \
+        -mindepth 1 \
+        -maxdepth 1 \
+        -type f \
+        -name '*.deb'
+)
 
-find /tmp/cache \
-    -mindepth 1 \
-    -maxdepth 1 \
-    -type f \
-    -name '*.deb' \
-    -exec bash -c 'process "${1}"' _ {} \;
+for package in "${packages[@]}"; do
+    process "${package}"
+done
