@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-echo "${0}"
+echo "Running ${BASH_SOURCE[0]}"
 
 function process() {
     local file_name=

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-echo "${0}"
+echo "Running ${BASH_SOURCE[0]}"
 
 busybox_binary=1.31.0-defconfig-multiarch-musl/busybox-x86_64
 busybox_url=https://busybox.net/downloads/binaries/"${busybox_binary}"

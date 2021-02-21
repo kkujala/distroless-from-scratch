@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+echo "Running ${BASH_SOURCE[0]}"
+
 image_a="${1}"
 image_b="${2}"
 

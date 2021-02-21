@@ -2,7 +2,7 @@
 # shellcheck shell=dash
 set -euo pipefail
 
-echo "${0}"
+echo Running "${0}"
 
 apk update
 
