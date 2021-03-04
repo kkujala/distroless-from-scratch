@@ -55,7 +55,7 @@ for os in "${oss[@]}"; do
             image_tag="localhost/distroless-from-scratch/${image_name}:${tag}"
 
             echo -e "\n\nBuilding ${dockerfile} as image ${image_tag}\n\n"
-            buildah bud \
+            buildah build-using-dockerfile \
                 --file="${dockerfile}" \
                 --layers=true \
                 --tag="${image_tag}" \
