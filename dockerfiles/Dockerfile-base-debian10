@@ -2,12 +2,12 @@ FROM localhost/distroless-from-scratch/static-debian10:latest as base
 
 FROM docker.io/debian:10.7-slim AS builder
 RUN mkdir --parents /tmp/copy
-COPY --from=base /packages.txt /tmp/copy
+COPY --from=base /packages.txt /tmp/copy/
 COPY \
     scripts/apt_download_packages.sh \
     scripts/change_timestamps_to_unix_epoch.sh \
     scripts/dpkg_extract_packages.sh \
-    /tmp
+    /tmp/
 RUN : \
     && /tmp/apt_download_packages.sh \
         libc6 \

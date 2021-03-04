@@ -9,7 +9,7 @@ COPY \
     scripts/change_timestamps_to_unix_epoch.sh \
     scripts/dpkg_extract_packages.sh \
     scripts/link_dpkg_status.sh \
-    /tmp
+    /tmp/
 RUN : \
     && /tmp/apt_download_packages.sh \
         base-files \

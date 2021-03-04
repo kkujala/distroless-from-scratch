@@ -2,11 +2,11 @@ FROM localhost/distroless-from-scratch/static-centos8:latest as base
 
 FROM docker.io/centos:centos8 AS builder
 RUN mkdir --parents /tmp/copy
-COPY --from=base /packages.txt /tmp/copy
+COPY --from=base /packages.txt /tmp/copy/
 COPY \
     scripts/add_busybox.sh \
     scripts/change_timestamps_to_unix_epoch.sh \
-    /tmp
+    /tmp/
 RUN : \
     && /tmp/add_busybox.sh \
     && /tmp/change_timestamps_to_unix_epoch.sh \

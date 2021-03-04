@@ -8,7 +8,7 @@ COPY \
     scripts/apk_install_packages.sh \
     scripts/change_timestamps_to_unix_epoch.sh \
     scripts/tar_extract_packages.sh \
-    /tmp
+    /tmp/
 RUN : \
     && /tmp/apk_install_packages.sh \
         bash \
