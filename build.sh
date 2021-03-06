@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-echo "Running ${BASH_SOURCE[0]}"
+# This script builds the distroless base images.
 
-repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+script="${BASH_SOURCE[0]}"
+repo_dir="$(cd "$(dirname "${script}")" >/dev/null 2>&1 && pwd -P)"
 
 oss=(
     alpine3
@@ -11,31 +12,108 @@ oss=(
     debian10
     opensuseleap15
 )
+oss_list="${oss[*]}"
+oss_list="${oss_list// /,}"
 
-if [[ "${#}" -ne 0 ]]; then
-    oss=("${@}")
-fi
+images=(
+    static
+    base
+    cc
+    java11
+    java8
+    nodejs
+)
+images_list="${images[*]}"
+images_list="${images_list// /,}"
+
+tags=(
+    latest
+    debug
+    nonroot
+    debug-nonroot
+)
+tags_list="${tags[*]}"
+tags_list="${tags_list// /,}"
+
+function usage() {
+    echo -n "Usage: ${script} [OPTION]...
+Build distroless images from sratch.
+
+-o os[,os]       list of operating systems to build, by default ${oss_list}
+-i image[,image] list of images to build,            by default ${images_list}
+-t tag[,tag]     list of tags to build,              by default ${tags_list}
+-h               prints this help
+"
+}
+
+function validate_value() {
+    local default=
+    default="${1}"
+    local value=
+    value="${2}"
+    local default_array=()
+
+    IFS=',' read -ra default_array <<< "${default}"
+    for default_value in "${default_array[@]}"; do
+        if [[ "${default_value}" == "${value}" ]]; then
+            return
+        fi
+    done
+
+    return 1
+}
+
+function validate_input() {
+    local default=
+    default="${1}"
+    local input=
+    input="${2}"
+    local input_array=()
+
+    IFS=',' read -ra input_array <<< "${input}"
+    for value in "${input_array[@]}"; do
+        if ! validate_value "${default}" "${value}"; then
+            echo >&2 "${value} was not found in ${default}"
+            exit 1
+        fi
+    done
+}
+
+while getopts o:i:t:h option; do
+    case "${option}" in
+        o)
+           validate_input "${oss_list}" "${OPTARG}"
+           IFS=',' read -ra oss <<< "${OPTARG}"
+           ;;
+        i)
+           validate_input "${images_list}" "${OPTARG}"
+           IFS=',' read -ra images <<< "${OPTARG}"
+           ;;
+        t)
+           validate_input "${tags_list}" "${OPTARG}"
+           IFS=',' read -ra tags <<< "${OPTARG}"
+           ;;
+        h)
+           usage
+           exit
+           ;;
+        *)
+           usage >&2
+           exit 1
+           ;;
+    esac
+done
+
+echo "Running ${script}"
 
 for os in "${oss[@]}"; do
-    images=(
-        static-"${os}"
-        base-"${os}"
-        cc-"${os}"
-        java11-"${os}"
-        java8-"${os}"
-        nodejs-"${os}"
-    )
-
-    tags=(
-        latest
-        debug
-        nonroot
-        debug-nonroot
-    )
 
     for image in "${images[@]}"; do
+        image+="-${os}"
+
         for tag in "${tags[@]}"; do
             dockerfile="${repo_dir}/dockerfiles/Dockerfile-${image}"
+
             if [[ "${tag}" != latest ]]; then
                 dockerfile="${dockerfile}-${tag}"
             fi
