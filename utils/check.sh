@@ -9,36 +9,31 @@ echo "Running ${BASH_SOURCE[0]}"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
 repo_dir="$(cd "${script_dir}/.." >/dev/null 2>&1 && pwd -P)"
 
-function process() {
+function extract_content() {
     local dockerfile=
-    dockerfile="${1#*/}"
-    local file_name=
-    file_name=/tmp/"${dockerfile////-}".sh
+    dockerfile="${1}"
 
-    echo "Processing ${dockerfile} as ${file_name}"
-
-    {
-        echo '#!/usr/bin/env bash'
-        echo 'set -Eeuo pipefail'
-    } > "${file_name}"
+    echo '#!/usr/bin/env bash'
+    echo 'set -Eeuo pipefail'
 
     sed --quiet \
         --expression='/^RUN .*[\]$/,/[^\]$/p' \
         --expression='/^RUN .*[^\]$/p' \
         "${dockerfile}" \
-    | sed 's,^RUN ,,' \
-    >> "${file_name}"
+    | sed 's,^RUN ,,'
+}
 
-    check_file "${file_name}"
-    rm "${file_name}"
-    echo
+function process() {
+    local dockerfile=
+    dockerfile="${1#*/}"
+
+    echo "Checking ${dockerfile} shell content"
+    check_file <(extract_content "${dockerfile}")
 }
 
 function check_file() {
     local file_name=
     file_name="${1}"
-
-    echo "Checking ${file_name}"
 
     shellcheck "${file_name}"
 }
@@ -56,13 +51,14 @@ function check_file() {
         process "${dockerfile}"
     done
 
-    mapfile -t scriptfiles < <(
+    mapfile -t script_files < <(
         find . \
             -type f \
             -name '*.sh'
     )
 
-    for scriptfile in "${scriptfiles[@]}"; do
-        check_file "${scriptfile}"
+    for script_file in "${script_files[@]}"; do
+        echo "Checking ${script_file}"
+        check_file "${script_file}"
     done
 )
