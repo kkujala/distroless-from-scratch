@@ -41,7 +41,8 @@ function process() {
 mapfile -t packages < <(
     find /tmp \
         -type f \
-        -name '*.rpm'
+        -name '*.rpm' \
+    | sort
 )
 
 for package in "${packages[@]}"; do

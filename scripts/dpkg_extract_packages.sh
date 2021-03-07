@@ -39,7 +39,8 @@ mapfile -t packages < <(
         -mindepth 1 \
         -maxdepth 1 \
         -type f \
-        -name '*.deb'
+        -name '*.deb' \
+    | sort
 )
 
 for package in "${packages[@]}"; do

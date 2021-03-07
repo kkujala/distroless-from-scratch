@@ -20,6 +20,7 @@ function find_java_directory() {
             -type d \
             -name 'bin' \
         | sed 's,^[.]/,,' \
+        | sort \
         | head -n 1
     )
 

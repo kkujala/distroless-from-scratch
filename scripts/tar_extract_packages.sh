@@ -44,7 +44,8 @@ mapfile -t packages < <(
         -mindepth 1 \
         -maxdepth 1 \
         -type f \
-        -name '*.apk'
+        -name '*.apk' \
+    | sort
 )
 
 for package in "${packages[@]}"; do

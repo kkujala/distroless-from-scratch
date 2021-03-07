@@ -44,7 +44,8 @@ function check_file() {
     mapfile -t dockerfiles < <(
         find . \
             -type f \
-            -name 'Dockerfile-*'
+            -name 'Dockerfile-*' \
+        | sort
     )
 
     for dockerfile in "${dockerfiles[@]}"; do
@@ -54,7 +55,8 @@ function check_file() {
     mapfile -t script_files < <(
         find . \
             -type f \
-            -name '*.sh'
+            -name '*.sh' \
+        | sort
     )
 
     for script_file in "${script_files[@]}"; do
