@@ -39,12 +39,12 @@ function usage() {
     echo -n "Usage: ${script} [OPTION]...
 Build distroless images from sratch.
 
--b               use buildah for building,           this is the default
--d               use docker for building
--o os[,os]       list of operating systems to build, by default ${oss_list}
--i image[,image] list of images to build,            by default ${images_list}
--t tag[,tag]     list of tags to build,              by default ${tags_list}
--h               prints this help
+-b                use buildah for building,           this is the default
+-d                use docker for building
+-o os[,os]        list of operating systems to build, by default ${oss_list}
+-i image[,image]  list of images to build,            by default ${images_list}
+-t tag[,tag]      list of tags to build,              by default ${tags_list}
+-h                prints this help
 "
 }
 

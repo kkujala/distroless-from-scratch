@@ -117,11 +117,15 @@ The utility scripts require the following tools.
 
 ### Building
 
-The utility script fo building can be invoked without parameters `./build.sh`,
-or with distribution or distributions defined `./build.sh debian10`.
+The utility script fo building can be invoked without parameters `./build.sh`
+in which case it will build all the operating systems, images, and tags.
+
+Individual OSs, images, and tags can be build with command line options. The
+`./build.sh -h` shows the usage and the available options.
 
 It will build all the combinations for distributions, types, and tags with
-`buildah`. The built images use `OCI` manifest type `v1`.
+`buildah` by default. The built images use `OCI` manifest type `v1` in that
+case.
 
 Alternatively the `Dockerfiles` can be built separately with other tools.
 
