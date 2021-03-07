@@ -1,19 +1,62 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-echo "Running ${BASH_SOURCE[0]}"
+script="${BASH_SOURCE[0]}"
 
-image_a="${1}"
-image_b="${2}"
+function usage() {
+    echo -n "Usage: ${script} OPTION_A OPTION_B
+Compare images.
 
-tmp_dir="${TMPDIR:-/tmp}"
+-p image  use image from podman for checking
+-d image  use image from docker for checking
+-h        prints this help
+"
+}
+
+if [[ "${#}" -ne 4 ]] && [[ "${#}" -ne 1 ]]; then
+    usage >&2
+    exit 1
+fi
+
+while getopts p:d:h option; do
+    case "${option}" in
+        p)
+           if [[ "${OPTIND}" == 3 ]]; then
+               image_a_tool=podman
+               image_a="${OPTARG}"
+           elif [[ "${OPTIND}" == 5 ]]; then
+               image_b_tool=podman
+               image_b="${OPTARG}"
+           fi
+           ;;
+        d)
+           if [[ "${OPTIND}" == 3 ]]; then
+               image_a_tool=docker
+               image_a="${OPTARG}"
+           elif [[ "${OPTIND}" == 5 ]]; then
+               image_b_tool=docker
+               image_b="${OPTARG}"
+           fi
+           ;;
+        h)
+           usage
+           exit
+           ;;
+        *)
+           usage >&2
+           exit 1
+           ;;
+    esac
+done
 
 function get_image_path() {
+    local tool=
+    tool="${1}"
     local image=
-    image="${1}"
+    image="${2}"
 
     local path=
-    path="${tmp_dir}/${image//[^a-zA-Z0-9]/-}"
+    path="${tmp_dir}/${tool}-${image//[^a-zA-Z0-9]/-}"
 
     local canonical_path=
     canonical_path="$(readlink --canonicalize "${path}")"
@@ -26,9 +69,14 @@ function get_image_path() {
     echo "${path}"
 }
 
-for image in "${image_a}" "${image_b}"; do
-    echo "processing ${image}"
-    image_path=$(get_image_path "${image}")
+function process() {
+    local tool=
+    tool="${1}"
+    local image=
+    image="${2}"
+
+    echo "processing ${image} with ${tool}"
+    image_path=$(get_image_path "${tool}" "${image}")
 
     if [[ -d "${image_path}" ]]; then
         chmod --recursive u+rw "${image_path}"
@@ -38,18 +86,15 @@ for image in "${image_a}" "${image_b}"; do
     mkdir --parents "${image_path}"
     (
         cd "${image_path}"
-        podman save --output=content.tar "${image}"
+        "${tool}" save --output=content.tar "${image}"
         tar --extract --file content.tar
         (
             mkdir --parents all
             cd all
             find .. \
-                -mindepth 1 \
-                -maxdepth 1 \
-                \( \
-                    -name "*.tar" \
-                    -and -not -name "content.tar" \
-                \) \
+                -mindepth 2 \
+                -maxdepth 2 \
+                -name "layer.tar" \
                 -exec tar --extract --file {} \;
             touch --date=@0 .
         )
@@ -61,10 +106,17 @@ for image in "${image_a}" "${image_b}"; do
             touch --date=@0 .
         )
     )
-done
+}
 
-diff_path_a=$(get_image_path "${image_a}")
-diff_path_b=$(get_image_path "${image_b}")
+echo "Running ${script}"
+
+tmp_dir="${TMPDIR:-/tmp}"
+
+process "${image_a_tool}" "${image_a}"
+process "${image_b_tool}" "${image_b}"
+
+diff_path_a=$(get_image_path "${image_a_tool}" "${image_a}")
+diff_path_b=$(get_image_path "${image_b_tool}" "${image_b}")
 
 diff_path_a_all="${diff_path_a}"/all
 diff_path_b_all="${diff_path_b}"/all
@@ -73,18 +125,20 @@ diff_path_a_last="${diff_path_a}"/last
 diff_path_b_last="${diff_path_b}"/last
 
 function get_inspect_command() {
-    local image_name=
-    image_name="${1}"
+    local tool=
+    tool="${1}"
+    local image=
+    image="${2}"
 
-    echo "podman inspect '${image_name}'"
+    echo "${tool} inspect '${image}'"
 }
 
 echo "Container image inspection"
 echo
 
 echo "vimdiff \\"
-echo "    <(podman inspect ${image_a}) \\"
-echo "    <(podman inspect ${image_b})"
+echo "    <($(get_inspect_command "${image_a_tool}" "${image_a}")) \\"
+echo "    <($(get_inspect_command "${image_b_tool}" "${image_b}"))"
 echo
 
 echo "Complete filesystem from all layers"

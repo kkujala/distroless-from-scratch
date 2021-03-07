@@ -184,12 +184,19 @@ The quality of the shell code can be checked with utility script invocation
 ## Comparing images
 
 In case images need to be compared to see how they differ the utility script
-can be invoked.
+can be invoked. The option `-p` is for podman and the option `-d` is for
+docker.
 
 ```bash
 ./utils/compare.sh \
-    localhost/distroless-from-scratch/base-debian10:latest \
-    localhost/distroless-from-scratch/base-centos8:latest
+    -p localhost/distroless-from-scratch/static-debian10:latest \
+    -d localhost/distroless-from-scratch/static-debian10:latest
+```
+
+```bash
+./utils/compare.sh \
+    -p localhost/distroless-from-scratch/base-debian10:latest \
+    -p localhost/distroless-from-scratch/base-centos8:latest
 ```
 
 It will produce a list of commands to compare `inspect` information for the
