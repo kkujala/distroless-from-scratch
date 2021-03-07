@@ -39,6 +39,8 @@ function usage() {
     echo -n "Usage: ${script} [OPTION]...
 Build distroless images from sratch.
 
+-b               use buildah for building,           this is the default
+-d               use docker for building
 -o os[,os]       list of operating systems to build, by default ${oss_list}
 -i image[,image] list of images to build,            by default ${images_list}
 -t tag[,tag]     list of tags to build,              by default ${tags_list}
@@ -79,8 +81,16 @@ function validate_input() {
     done
 }
 
-while getopts o:i:t:h option; do
+builder=buildah
+
+while getopts bdo:i:t:h option; do
     case "${option}" in
+        b)
+           builder=buildah
+           ;;
+        d)
+           builder=docker
+           ;;
         o)
            validate_input "${oss_list}" "${OPTARG}"
            IFS=',' read -ra oss <<< "${OPTARG}"
@@ -132,13 +142,27 @@ for os in "${oss[@]}"; do
 
             image_tag="localhost/distroless-from-scratch/${image_name}:${tag}"
 
-            echo -e "\n\nBuilding ${dockerfile} as image ${image_tag}\n\n"
-            buildah build-using-dockerfile \
-                --file="${dockerfile}" \
-                --layers=true \
-                --tag="${image_tag}" \
-                --timestamp=0 \
-                "${repo_dir}"
+            echo -e -n "\n\nBuilding ${dockerfile} as image ${image_tag} with "
+            echo -e "${builder}\n\n"
+
+            case "${builder}" in
+                buildah)
+                    buildah build-using-dockerfile \
+                        --file="${dockerfile}" \
+                        --layers=true \
+                        --tag="${image_tag}" \
+                        --timestamp=0 \
+                        "${repo_dir}"
+                    ;;
+                docker)
+                    docker build \
+                        --file="${dockerfile}" \
+                        --tag="${image_tag}" \
+                        "${repo_dir}"
+                    ;;
+                *)
+                    ;;
+            esac
         done
     done
 done
