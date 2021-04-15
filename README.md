@@ -187,6 +187,14 @@ In the `openSUSE Leap 15` container images the root folder has `packages.txt`
 which lists the extracted `RPM` packages. The exception is the `busybox` which is
 not extracted from an `RPM` package.
 
+The /var/lib/rpm Berkeley DB contains all the installed OS packages. The
+contents of the database can be listed on a system that has the `rpm` command
+installed.
+
+```bash
+rpm --all --query
+```
+
 ## Checking quality
 
 The `Dockerfiles` use `bash` scripts and shell constructs in the `CMD` parts.

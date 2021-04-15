@@ -1,8 +1,9 @@
 FROM localhost/distroless-from-scratch/base-opensuseleap15:latest as base
 
 FROM docker.io/opensuse/leap:15 AS builder
-RUN mkdir --parents /tmp/copy
+RUN mkdir --parents /tmp/copy/var/lib/rpm
 COPY --from=base /packages.txt /tmp/copy/
+COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
 COPY \
     scripts/change_timestamps_to_unix_epoch.sh \
     scripts/rpm_extract_packages.sh \

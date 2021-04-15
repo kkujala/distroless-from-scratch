@@ -5,9 +5,11 @@ COPY \
     scripts/add_users_and_groups.sh \
     scripts/change_timestamps_to_unix_epoch.sh \
     scripts/rpm_extract_packages.sh \
+    scripts/rpm_initialize_database.sh \
     scripts/zypper_download_packages.sh \
     /tmp/
 RUN : \
+    && /tmp/rpm_initialize_database.sh \
     && /tmp/zypper_download_packages.sh \
         ca-certificates \
         filesystem \
