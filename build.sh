@@ -149,7 +149,9 @@ for os in "${oss[@]}"; do
                 buildah)
                     buildah build-using-dockerfile \
                         --file="${dockerfile}" \
-                        --layers=true \
+                        --force-rm=false \
+                        --no-cache \
+                        --rm=false \
                         --tag="${image_tag}" \
                         --timestamp=0 \
                         "${repo_dir}"
@@ -163,6 +165,9 @@ for os in "${oss[@]}"; do
                 *)
                     ;;
             esac
+
+            echo -e -n "\nBuilt ${dockerfile} as image ${image_tag} with "
+            echo -e "${builder}"
         done
     done
 done

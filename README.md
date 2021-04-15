@@ -157,8 +157,16 @@ lists the package info for the extracted `APK` packages.
 ### CentOS 8
 
 In the `CentOS 8` container images the root folder has `packages.txt` which
-lists the extracted `RPM` packages. The exception is the `busybox` which is not
-extracted from an `RPM` package.
+lists the extracted `RPM` packages. The exception is the `busybox` which is a
+downloaded binary.
+
+The /var/lib/rpm Berkeley DB contains all the installed OS packages except the
+`busybox`. The contents of the database can be listed on a system that has the
+`rpm` command installed.
+
+```bash
+rpm --all --query
+```
 
 ### Debian 10
 

@@ -28,6 +28,18 @@ function store_package_data() {
         --expression="s/(not installed)/$(date --date=@0)/" \
         --expression='$s/.*//' \
     >> /tmp/copy/packages.txt
+
+    rpm \
+        --dbpath /tmp/copy/var/lib/rpm \
+        --install "${package}" \
+        --justdb \
+        --nocaps \
+        --nocontexts \
+        --nodeps \
+        --nofiledigest \
+        --noorder \
+        --noscripts \
+        --notriggers
 }
 
 function process() {
