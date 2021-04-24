@@ -55,6 +55,11 @@ function store_package_data() {
             --noorder \
             --noscripts \
             --notriggers
+
+    faketime @0 \
+        rpm \
+            --dbpath /tmp/copy/var/lib/rpm \
+            --rebuilddb
 }
 
 function process() {
