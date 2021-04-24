@@ -5,6 +5,19 @@ echo "Running ${BASH_SOURCE[0]}"
 
 mkdir --parents /tmp/copy
 
+if ! command -v faketime &> /dev/null; then
+    if command -v yum &> /dev/null; then
+        yum --assumeyes install epel-release.noarch
+        yum --assumeyes makecache
+        yum --assumeyes install libfaketime.x86_64
+    fi
+
+    if command -v zypper &> /dev/null; then
+        zypper refresh
+        zypper install --no-confirm libfaketime
+    fi
+fi
+
 function extract() {
     local package=
     package="${1}"
@@ -20,26 +33,28 @@ function store_package_data() {
     local package=
     package="${1}"
 
-    rpm \
-        --info \
-        --package "${package}" \
-        --query \
-    | sed \
-        --expression="s/(not installed)/$(date --date=@0)/" \
-        --expression='$s/.*//' \
-    >> /tmp/copy/packages.txt
+    faketime @0 \
+        rpm \
+            --info \
+            --package "${package}" \
+            --query \
+        | sed \
+            --expression="s/(not installed)/$(date --date=@0)/" \
+            --expression='$s/.*//' \
+        >> /tmp/copy/packages.txt
 
-    rpm \
-        --dbpath /tmp/copy/var/lib/rpm \
-        --install "${package}" \
-        --justdb \
-        --nocaps \
-        --nocontexts \
-        --nodeps \
-        --nofiledigest \
-        --noorder \
-        --noscripts \
-        --notriggers
+    faketime @0 \
+        rpm \
+            --dbpath /tmp/copy/var/lib/rpm \
+            --install "${package}" \
+            --justdb \
+            --nocaps \
+            --nocontexts \
+            --nodeps \
+            --nofiledigest \
+            --noorder \
+            --noscripts \
+            --notriggers
 }
 
 function process() {
