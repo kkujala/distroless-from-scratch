@@ -49,7 +49,7 @@ The following OS distributions are available.
 - Alpine 3
 - CentOS 8
 - Debian 12
-- openSUSE Leap 15
+- OpenSUSE Leap 15
 
 The following base container image types are available.
 
@@ -181,9 +181,9 @@ that the package information can be queried from the command line, when the
 dpkg --list
 ```
 
-### openSUSE Leap 15
+### OpenSUSE Leap 15
 
-In the `openSUSE Leap 15` container images the root folder has `packages.txt`
+In the `OpenSUSE Leap 15` container images the root folder has `packages.txt`
 which lists the extracted `RPM` packages. The exception is the `busybox` which
 is not extracted from an `RPM` package.
 
