@@ -122,10 +122,10 @@ for os in "${oss[@]}"; do
         image+="-${os}"
 
         for tag in "${tags[@]}"; do
-            dockerfile="${repo_dir}/dockerfiles/Dockerfile-${image}"
+            containerfile="${repo_dir}/containerfiles/${image}"
 
             if [[ "${tag}" != latest ]]; then
-                dockerfile="${dockerfile}-${tag}"
+                containerfile="${containerfile}-${tag}"
             fi
 
             if [[ "${image}" =~ java(8|11) ]]; then
@@ -142,13 +142,13 @@ for os in "${oss[@]}"; do
 
             image_tag="localhost/distroless-from-scratch/${image_name}:${tag}"
 
-            echo -e -n "\n\nBuilding ${dockerfile} as image ${image_tag} with "
+            echo -e -n "\n\nBuilding ${containerfile} as image ${image_tag} with "
             echo -e "${builder}\n\n"
 
             case "${builder}" in
                 buildah)
                     buildah build-using-dockerfile \
-                        --file="${dockerfile}" \
+                        --file="${containerfile}" \
                         --force-rm=false \
                         --no-cache \
                         --rm=false \
@@ -158,7 +158,7 @@ for os in "${oss[@]}"; do
                     ;;
                 docker)
                     docker build \
-                        --file="${dockerfile}" \
+                        --file="${containerfile}" \
                         --tag="${image_tag}" \
                         "${repo_dir}"
                     ;;
@@ -166,7 +166,7 @@ for os in "${oss[@]}"; do
                     ;;
             esac
 
-            echo -e -n "\nBuilt ${dockerfile} as image ${image_tag} with "
+            echo -e -n "\nBuilt ${containerfile} as image ${image_tag} with "
             echo -e "${builder}"
         done
     done

@@ -2,8 +2,8 @@
 
 ## How?
 
-This is done with simple `Dockerfiles` which can easily be inspected, modified,
-and extended.
+This is done with simple `containerfiles` which can easily be inspected,
+modified, and extended.
 
 ## to build?
 
@@ -28,7 +28,7 @@ container images. The concept is described well in
 [here](https://docs.docker.com/develop/develop-images/baseimages/#create-a-simple-parent-image-using-scratch).
 
 In the `scratch` image the filesystem is initially completely empty. In the
-`dockerfiles` a multistage build is used to fetch the OS packages, to exract
+`dockerfiles` a multistage build is used to fetch the OS packages, to extract
 the files in them, and to build package metadata.
 
 The multistage build is described in this
@@ -39,10 +39,10 @@ up to date as only rebuild is needed.
 
 ## Why?
 
-These `Dockerfiles` are meant for bootstrapping the base container image
+These `containerfiles` are meant for bootstrapping the base container image
 building for the `"distroless"` images for many different OS distributions.
 
-## `Dockerfiles` for OS distributions
+## `containerfiles` for OS distributions
 
 The following OS distributions are available.
 
@@ -127,7 +127,7 @@ It will build all the combinations for distributions, types, and tags with
 `buildah` by default. The built images use `OCI` manifest type `v1` in that
 case.
 
-Alternatively the `Dockerfiles` can be built separately with other tools.
+Alternatively the `containerfiles` can be built separately with other tools.
 
 The container images builds are
 [reproducable](https://reproducible-builds.org/) in case the package versions
@@ -135,12 +135,12 @@ are pinned down.
 
 ## Using the `"distroless"` images as base images
 
-### What one needs to know before using the `Dockerfiles`
+### What one needs to know before using the `containerfiles`
 
 Please, have a look at the [COPYRIGHT](COPYRIGHT.md), and
 [LICENSE](LICENSE.md).
 
-### `CMD` build command in `Dockerfile`
+### `CMD` build command in `containerfile`
 
 It should be with `["/path/to/file", "argument"]` notation.
 
@@ -184,8 +184,8 @@ dpkg --list
 ### openSUSE Leap 15
 
 In the `openSUSE Leap 15` container images the root folder has `packages.txt`
-which lists the extracted `RPM` packages. The exception is the `busybox` which is
-not extracted from an `RPM` package.
+which lists the extracted `RPM` packages. The exception is the `busybox` which
+is not extracted from an `RPM` package.
 
 The /var/lib/rpm Berkeley DB contains all the installed OS packages. The
 contents of the database can be listed on a system that has the `rpm` command
@@ -197,9 +197,9 @@ rpm --all --query
 
 ## Checking quality
 
-The `Dockerfiles` use `bash` scripts and shell constructs in the `CMD` parts.
-The quality of the shell code can be checked with utility script invocation
-`./utils/check.sh`.
+The `containerfiles` use `bash` scripts and shell constructs in the `CMD`
+parts. The quality of the shell code can be checked with utility script
+invocation `./utils/check.sh`.
 
 ## Comparing images
 
@@ -399,9 +399,9 @@ zypper search --file-list /path/to/file
 
 ## Considerations
 
-The `Dockerfiles` have lists of packages that ensure the functionality. Some of
-the packages may not be needed for a particular use case. This means that the
-package lists could trimmed down.
+The `containerfiles` have lists of packages that ensure the functionality. Some
+of the packages may not be needed for a particular use case. This means that
+the package lists could trimmed down.
 
 Some packages contain unnecessary files, such as executables or manual pages.
 For a minimal container image these files could be omitted.

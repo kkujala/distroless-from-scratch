@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# This script checks the shell script content in the dockerfiles and all the
+# This script checks the shell script content in the containerfiles and all the
 # shell script files.
 
 echo "Running ${BASH_SOURCE[0]}"
@@ -10,8 +10,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
 repo_dir="$(cd "${script_dir}/.." >/dev/null 2>&1 && pwd -P)"
 
 function extract_content() {
-    local dockerfile=
-    dockerfile="${1}"
+    local containerfile=
+    containerfile="${1}"
 
     echo '#!/usr/bin/env bash'
     echo 'set -Eeuo pipefail'
@@ -19,16 +19,16 @@ function extract_content() {
     sed --quiet \
         --expression='/^RUN .*[\]$/,/[^\]$/p' \
         --expression='/^RUN .*[^\]$/p' \
-        "${dockerfile}" \
+        "${containerfile}" \
     | sed 's,^RUN ,,'
 }
 
 function process() {
-    local dockerfile=
-    dockerfile="${1#*/}"
+    local containerfile=
+    containerfile="${1}"
 
-    echo "Checking ${dockerfile} shell content"
-    check_file <(extract_content "${dockerfile}")
+    echo "Checking ${containerfile} shell content"
+    check_file <(extract_content "${containerfile}")
 }
 
 function check_file() {
@@ -41,21 +41,20 @@ function check_file() {
 (
     cd "${repo_dir}"
 
-    mapfile -t dockerfiles < <(
-        find . \
+    mapfile -t containerfiles < <(
+        find containerfiles \
             -type f \
-            -name 'Dockerfile-*' \
         | sort
     )
 
-    for dockerfile in "${dockerfiles[@]}"; do
-        process "${dockerfile}"
+    for containerfile in "${containerfiles[@]}"; do
+        process "${containerfile}"
     done
 
     mapfile -t script_files < <(
         find . \
-            -type f \
             -name '*.sh' \
+            -type f \
         | sort
     )
 
