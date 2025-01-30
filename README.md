@@ -47,9 +47,9 @@ building for the `"distroless"` images for many different OS distributions.
 The following OS distributions are available.
 
 - Alpine 3
-- CentOS 8
 - Debian 12
 - OpenSUSE Leap 15
+- Rocky Linux 9
 
 The following base container image types are available.
 
@@ -154,11 +154,11 @@ notation.
 In the `Alpine 3` container images the root folder has `packages.txt` which
 lists the package info for the extracted `APK` packages.
 
-### CentOS 8
+### Rocky Linux 9
 
-In the `CentOS 8` container images the root folder has `packages.txt` which
-lists the extracted `RPM` packages. The exception is the `busybox` which is a
-downloaded binary.
+In the `Rocky Linux 9` container images the root folder has `packages.txt`
+which lists the extracted `RPM` packages. The exception is the `busybox` which
+is a downloaded binary.
 
 The /var/lib/rpm Berkeley DB contains all the installed OS packages except the
 `busybox`. The contents of the database can be listed on a system that has the
@@ -216,7 +216,7 @@ docker.
 ```bash
 ./utils/compare.sh \
     -p localhost/distroless-from-scratch/base-debian12:latest \
-    -p localhost/distroless-from-scratch/base-centos8:latest
+    -p localhost/distroless-from-scratch/base-rockylinux9:latest
 ```
 
 It will produce a list of commands to compare `inspect` information for the
@@ -270,7 +270,7 @@ can be queried on this [page](https://pkgs.alpinelinux.org/contents).
 apk info --who-owns /path/to/file
 ```
 
-### CentOS 8
+### Rocky Linux 9
 
 The package repository can be updated with a command.
 

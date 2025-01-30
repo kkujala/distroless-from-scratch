@@ -5,6 +5,12 @@ echo "Running ${BASH_SOURCE[0]}"
 
 mkdir --parents /tmp/copy
 
+if ! command -v cpio &> /dev/null; then
+    if command -v yum &> /dev/null; then
+        yum --assumeyes install cpio.x86_64
+    fi
+fi
+
 if ! command -v faketime &> /dev/null; then
     if command -v yum &> /dev/null; then
         yum --assumeyes install epel-release.noarch

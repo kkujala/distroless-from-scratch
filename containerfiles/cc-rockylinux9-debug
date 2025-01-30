@@ -1,6 +1,6 @@
-FROM localhost/distroless-from-scratch/base-centos8:latest as base
+FROM localhost/distroless-from-scratch/cc-rockylinux9:latest as base
 
-FROM docker.io/centos:centos8 AS builder
+FROM docker.io/rockylinux:9 AS builder
 RUN mkdir --parents /tmp/copy/var/lib/rpm
 COPY --from=base /packages.txt /tmp/copy/
 COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
@@ -13,6 +13,6 @@ RUN : \
     && /tmp/change_timestamps_to_unix_epoch.sh \
     && :
 
-FROM localhost/distroless-from-scratch/base-centos8:latest
+FROM localhost/distroless-from-scratch/cc-rockylinux9:latest
 COPY --from=builder /tmp/copy ./
 ENTRYPOINT ["/bin/sh"]

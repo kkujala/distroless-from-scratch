@@ -1,4 +1,4 @@
-FROM docker.io/centos:centos8 AS builder
+FROM docker.io/rockylinux:9 AS builder
 COPY \
     scripts/add_nonroot.sh \
     scripts/add_nsswitch.sh \
@@ -11,9 +11,9 @@ COPY \
 RUN : \
     && /tmp/rpm_initialize_database.sh \
     && /tmp/yum_download_packages.sh \
-        centos-linux-release.noarch \
         ca-certificates.noarch \
         filesystem.x86_64 \
+        rocky-release.noarch \
         setup.noarch \
         tzdata.noarch \
     && /tmp/rpm_extract_packages.sh \

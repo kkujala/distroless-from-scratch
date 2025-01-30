@@ -1,0 +1,3 @@
+FROM localhost/distroless-from-scratch/nodejs-rockylinux9:latest
+USER 65532:65532
+WORKDIR /home/nonroot

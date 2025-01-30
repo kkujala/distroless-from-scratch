@@ -8,9 +8,9 @@ repo_dir="$(cd "$(dirname "${script}")" >/dev/null 2>&1 && pwd -P)"
 
 oss=(
     alpine3
-    centos8
     debian12
     opensuseleap15
+    rockylinux9
 )
 oss_list="${oss[*]}"
 oss_list="${oss_list// /,}"
