@@ -13,8 +13,8 @@ RUN : \
     && /tmp/apk_install_packages.sh \
         bash \
     && /tmp/apk_download_packages.sh \
-        libcrypto1.1 \
-        libssl1.1 \
+        libcrypto3 \
+        libssl3 \
         musl \
         openssl \
     && /tmp/tar_extract_packages.sh \
