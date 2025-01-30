@@ -1,29 +1,22 @@
-FROM localhost/distroless-from-scratch/java-debian10:8 as base
+FROM localhost/distroless-from-scratch/cc-debian12:latest as base
 
-FROM docker.io/debian:10.7-slim AS builder
+FROM docker.io/debian:12-slim AS builder
 RUN mkdir --parents /tmp/copy
 COPY --from=base /packages.txt /tmp/copy/
 COPY \
-    scripts/add_openjdk8_repository.sh \
     scripts/apt_download_packages.sh \
-    scripts/apt_install_packages.sh \
     scripts/change_timestamps_to_unix_epoch.sh \
     scripts/dpkg_extract_packages.sh \
     scripts/link_busybox.sh \
     /tmp/
 RUN : \
-    && /tmp/apt_install_packages.sh \
-        curl \
-        gnupg \
-        software-properties-common \
-    && /tmp/add_openjdk8_repository.sh \
     && /tmp/apt_download_packages.sh \
-        adoptopenjdk-8-hotspot \
         busybox-static \
     && /tmp/dpkg_extract_packages.sh \
     && /tmp/link_busybox.sh \
     && /tmp/change_timestamps_to_unix_epoch.sh \
     && :
 
-FROM localhost/distroless-from-scratch/java-debian10:8
+FROM localhost/distroless-from-scratch/cc-debian12:latest
 COPY --from=builder /tmp/copy ./
+ENTRYPOINT ["/bin/sh"]

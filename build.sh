@@ -9,7 +9,7 @@ repo_dir="$(cd "$(dirname "${script}")" >/dev/null 2>&1 && pwd -P)"
 oss=(
     alpine3
     centos8
-    debian10
+    debian12
     opensuseleap15
 )
 oss_list="${oss[*]}"
@@ -123,12 +123,15 @@ for os in "${oss[@]}"; do
 
         for tag in "${tags[@]}"; do
             containerfile="${repo_dir}/containerfiles/${image}"
+            if [[ ! -e "${containerfile}" ]]; then
+                continue
+            fi
 
             if [[ "${tag}" != latest ]]; then
                 containerfile="${containerfile}-${tag}"
             fi
 
-            if [[ "${image}" =~ java(8|11) ]]; then
+            if [[ "${image}" =~ java(8|11|17) ]]; then
                 version="${BASH_REMATCH[1]}"
                 image_name="${image/${version}/}"
                 if [[ "${tag}" != latest ]]; then

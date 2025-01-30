@@ -1,6 +1,6 @@
-FROM localhost/distroless-from-scratch/cc-debian10:latest as base
+FROM localhost/distroless-from-scratch/cc-debian12:latest as base
 
-FROM docker.io/debian:10.7-slim AS builder
+FROM docker.io/debian:12-slim AS builder
 RUN mkdir --parents /tmp/copy
 COPY --from=base /packages.txt /tmp/copy/
 COPY \
@@ -24,18 +24,18 @@ RUN : \
         liblcms2-2 \
         libpng16-16 \
         libuuid1 \
-        openjdk-11-jre-headless \
+        openjdk-17-jre-headless \
         zlib1g \
     && /tmp/dpkg_extract_packages.sh \
     && /tmp/apt_install_packages.sh \
-        openjdk-11-jre-headless \
+        openjdk-17-jre-headless \
     && /tmp/add_java_certificates.sh \
     && /tmp/link_java_executable.sh \
     && /tmp/change_timestamps_to_unix_epoch.sh \
     && :
 
-FROM localhost/distroless-from-scratch/cc-debian10:latest
+FROM localhost/distroless-from-scratch/cc-debian12:latest
 COPY --from=builder /tmp/copy ./
 ENTRYPOINT ["/usr/bin/java", "-jar"]
-ENV JAVA_VERSION=11
+ENV JAVA_VERSION=17
 ENV LANG=C.UTF-8

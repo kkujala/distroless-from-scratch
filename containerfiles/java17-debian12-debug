@@ -1,6 +1,6 @@
-FROM localhost/distroless-from-scratch/base-debian10:latest as base
+FROM localhost/distroless-from-scratch/java-debian12:17 as base
 
-FROM docker.io/debian:10.7-slim AS builder
+FROM docker.io/debian:12-slim AS builder
 RUN mkdir --parents /tmp/copy
 COPY --from=base /packages.txt /tmp/copy/
 COPY \
@@ -12,11 +12,11 @@ COPY \
 RUN : \
     && /tmp/apt_download_packages.sh \
         busybox-static \
+        openjdk-17-jdk-headless \
     && /tmp/dpkg_extract_packages.sh \
     && /tmp/link_busybox.sh \
     && /tmp/change_timestamps_to_unix_epoch.sh \
     && :
 
-FROM localhost/distroless-from-scratch/base-debian10:latest
+FROM localhost/distroless-from-scratch/java-debian12:17
 COPY --from=builder /tmp/copy ./
-ENTRYPOINT ["/bin/sh"]

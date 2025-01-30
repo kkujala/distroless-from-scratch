@@ -1,3 +1,0 @@
-FROM localhost/distroless-from-scratch/java-debian10:8
-USER 65532:65532
-WORKDIR /home/nonroot

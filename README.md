@@ -48,7 +48,7 @@ The following OS distributions are available.
 
 - Alpine 3
 - CentOS 8
-- Debian 10
+- Debian 12
 - openSUSE Leap 15
 
 The following base container image types are available.
@@ -168,9 +168,9 @@ The /var/lib/rpm Berkeley DB contains all the installed OS packages except the
 rpm --all --query
 ```
 
-### Debian 10
+### Debian 12
 
-In the `Debian 10` container images the root folder has `packages.txt` which
+In the `Debian 12` container images the root folder has `packages.txt` which
 lists the package info for the extracted `DEB` packages.
 
 The `packages.txt` file is symbolically linked to `/var/lib/dpkg/status` so
@@ -209,13 +209,13 @@ docker.
 
 ```bash
 ./utils/compare.sh \
-    -p localhost/distroless-from-scratch/static-debian10:latest \
-    -d localhost/distroless-from-scratch/static-debian10:latest
+    -p localhost/distroless-from-scratch/static-debian12:latest \
+    -d localhost/distroless-from-scratch/static-debian12:latest
 ```
 
 ```bash
 ./utils/compare.sh \
-    -p localhost/distroless-from-scratch/base-debian10:latest \
+    -p localhost/distroless-from-scratch/base-debian12:latest \
     -p localhost/distroless-from-scratch/base-centos8:latest
 ```
 
@@ -310,7 +310,7 @@ Package can be identified for file name with a command.
 yum provides /path/to/file
 ```
 
-### Debian 10
+### Debian 12
 
 The package repository can be updated with a command.
 
