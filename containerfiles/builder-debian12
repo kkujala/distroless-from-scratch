@@ -1,0 +1,18 @@
+FROM docker.io/debian:12-slim
+COPY \
+    scripts/add_certificates.sh \
+    scripts/add_java_certificates.sh \
+    scripts/add_nonroot.sh \
+    scripts/add_nsswitch.sh \
+    scripts/add_users_and_groups.sh \
+    scripts/apt_download_packages.sh \
+    scripts/apt_install_packages.sh \
+    scripts/change_timestamps_to_unix_epoch.sh \
+    scripts/dpkg_extract_packages.sh \
+    scripts/link_busybox.sh \
+    scripts/link_dpkg_status.sh \
+    scripts/link_java_executable.sh \
+    /opt/
+RUN : \
+    && apt update \
+    && :

@@ -3,8 +3,6 @@ set -Eeuo pipefail
 
 echo "Running ${BASH_SOURCE[0]}"
 
-apt update
-
 (
     mkdir --parents /tmp/cache
     chmod 777 /tmp/cache

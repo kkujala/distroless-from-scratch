@@ -1,18 +1,10 @@
 FROM localhost/distroless-from-scratch/cc-debian12:latest as base
 
-FROM docker.io/debian:12-slim AS builder
+FROM localhost/distroless-from-scratch/builder-debian12:latest AS builder
 RUN mkdir --parents /tmp/copy
 COPY --from=base /packages.txt /tmp/copy/
-COPY \
-    scripts/add_java_certificates.sh \
-    scripts/apt_download_packages.sh \
-    scripts/apt_install_packages.sh \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/dpkg_extract_packages.sh \
-    scripts/link_java_executable.sh \
-    /tmp/
 RUN : \
-    && /tmp/apt_download_packages.sh \
+    && /opt/apt_download_packages.sh \
         ca-certificates-java \
         fontconfig-config \
         fonts-dejavu-core \
@@ -26,12 +18,12 @@ RUN : \
         libuuid1 \
         openjdk-17-jre-headless \
         zlib1g \
-    && /tmp/dpkg_extract_packages.sh \
-    && /tmp/apt_install_packages.sh \
+    && /opt/dpkg_extract_packages.sh \
+    && /opt/apt_install_packages.sh \
         openjdk-17-jre-headless \
-    && /tmp/add_java_certificates.sh \
-    && /tmp/link_java_executable.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/add_java_certificates.sh \
+    && /opt/link_java_executable.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM localhost/distroless-from-scratch/cc-debian12:latest

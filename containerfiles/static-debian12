@@ -1,31 +1,20 @@
-FROM docker.io/debian:12-slim AS builder
-COPY \
-    scripts/add_certificates.sh \
-    scripts/add_nonroot.sh \
-    scripts/add_nsswitch.sh \
-    scripts/add_users_and_groups.sh \
-    scripts/apt_download_packages.sh \
-    scripts/apt_install_packages.sh \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/dpkg_extract_packages.sh \
-    scripts/link_dpkg_status.sh \
-    /tmp/
+FROM localhost/distroless-from-scratch/builder-debian12:latest AS builder
 RUN : \
-    && /tmp/apt_download_packages.sh \
+    && /opt/apt_download_packages.sh \
         base-files \
         ca-certificates \
         netbase \
         tzdata \
-    && /tmp/dpkg_extract_packages.sh \
-    && /tmp/apt_install_packages.sh \
+    && /opt/dpkg_extract_packages.sh \
+    && /opt/apt_install_packages.sh \
         ca-certificates \
         openssl \
-    && /tmp/add_certificates.sh \
-    && /tmp/link_dpkg_status.sh \
-    && /tmp/add_users_and_groups.sh \
-    && /tmp/add_nonroot.sh \
-    && /tmp/add_nsswitch.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/add_certificates.sh \
+    && /opt/link_dpkg_status.sh \
+    && /opt/add_users_and_groups.sh \
+    && /opt/add_nonroot.sh \
+    && /opt/add_nsswitch.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM scratch

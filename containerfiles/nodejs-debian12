@@ -1,15 +1,10 @@
 FROM localhost/distroless-from-scratch/cc-debian12:latest as base
 
-FROM docker.io/debian:12-slim AS builder
+FROM localhost/distroless-from-scratch/builder-debian12:latest AS builder
 RUN mkdir --parents /tmp/copy
 COPY --from=base /packages.txt /tmp/copy/
-COPY \
-    scripts/apt_download_packages.sh \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/dpkg_extract_packages.sh \
-    /tmp/
 RUN : \
-    && /tmp/apt_download_packages.sh \
+    && /opt/apt_download_packages.sh \
         libatomic1 \
         libbrotli1 \
         libc-ares2 \
@@ -19,8 +14,8 @@ RUN : \
         nodejs \
         npm \
         zlib1g \
-    && /tmp/dpkg_extract_packages.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/dpkg_extract_packages.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM localhost/distroless-from-scratch/cc-debian12:latest
