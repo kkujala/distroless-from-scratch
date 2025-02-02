@@ -1,18 +1,10 @@
 FROM localhost/distroless-from-scratch/cc-alpine3:latest as base
 
-FROM docker.io/alpine:3 AS builder
+FROM localhost/distroless-from-scratch/builder-alpine3:latest AS builder
 RUN mkdir --parents /tmp/copy
 COPY --from=base /packages.txt /tmp/copy/
-COPY \
-    scripts/apk_download_packages.sh \
-    scripts/apk_install_packages.sh \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/tar_extract_packages.sh \
-    /tmp/
 RUN : \
-    && /tmp/apk_install_packages.sh \
-        bash \
-    && /tmp/apk_download_packages.sh \
+    && /opt/apk_download_packages.sh \
         brotli-libs \
         c-ares \
         libuv \
@@ -20,8 +12,8 @@ RUN : \
         nodejs \
         npm \
         zlib \
-    && /tmp/tar_extract_packages.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/tar_extract_packages.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM localhost/distroless-from-scratch/cc-alpine3:latest

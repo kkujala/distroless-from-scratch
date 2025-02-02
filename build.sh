@@ -16,6 +16,7 @@ oss_list="${oss[*]}"
 oss_list="${oss_list// /,}"
 
 images=(
+    builder
     static
     base
     cc
@@ -123,12 +124,13 @@ for os in "${oss[@]}"; do
 
         for tag in "${tags[@]}"; do
             containerfile="${repo_dir}/containerfiles/${image}"
-            if [[ ! -e "${containerfile}" ]]; then
-                continue
-            fi
 
             if [[ "${tag}" != latest ]]; then
                 containerfile="${containerfile}-${tag}"
+            fi
+
+            if [[ ! -e "${containerfile}" ]]; then
+                continue
             fi
 
             if [[ "${image}" =~ java(8|11|17) ]]; then
