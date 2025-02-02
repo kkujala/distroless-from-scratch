@@ -11,11 +11,6 @@ if ! command -v faketime &> /dev/null; then
         yum --assumeyes makecache
         yum --assumeyes install libfaketime.x86_64
     fi
-
-    if command -v zypper &> /dev/null; then
-        zypper refresh
-        zypper install --no-confirm libfaketime
-    fi
 fi
 
 faketime @0 \

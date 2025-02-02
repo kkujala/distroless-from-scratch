@@ -1,26 +1,17 @@
-FROM docker.io/opensuse/leap:15 AS builder
-COPY \
-    scripts/add_nonroot.sh \
-    scripts/add_nsswitch.sh \
-    scripts/add_users_and_groups.sh \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/rpm_extract_packages.sh \
-    scripts/rpm_initialize_database.sh \
-    scripts/zypper_download_packages.sh \
-    /tmp/
+FROM localhost/distroless-from-scratch/builder-opensuseleap15:latest AS builder
 RUN : \
-    && /tmp/rpm_initialize_database.sh \
-    && /tmp/zypper_download_packages.sh \
+    && /opt/rpm_initialize_database.sh \
+    && /opt/zypper_download_packages.sh \
         ca-certificates \
         filesystem \
         netcfg \
         openSUSE-release \
         timezone \
-    && /tmp/rpm_extract_packages.sh \
-    && /tmp/add_users_and_groups.sh \
-    && /tmp/add_nonroot.sh \
-    && /tmp/add_nsswitch.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/add_users_and_groups.sh \
+    && /opt/add_nonroot.sh \
+    && /opt/add_nsswitch.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM scratch

@@ -1,21 +1,15 @@
 FROM localhost/distroless-from-scratch/base-opensuseleap15:latest as base
 
-FROM docker.io/opensuse/leap:15 AS builder
+FROM localhost/distroless-from-scratch/builder-opensuseleap15:latest AS builder
 RUN mkdir --parents /tmp/copy/var/lib/rpm
 COPY --from=base /packages.txt /tmp/copy/
 COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
-COPY \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/link_busybox.sh \
-    scripts/rpm_extract_packages.sh \
-    scripts/zypper_download_packages.sh \
-    /tmp/
 RUN : \
-    && /tmp/zypper_download_packages.sh \
+    && /opt/zypper_download_packages.sh \
         busybox-static \
-    && /tmp/rpm_extract_packages.sh \
-    && /tmp/link_busybox.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/link_busybox.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM localhost/distroless-from-scratch/base-opensuseleap15:latest

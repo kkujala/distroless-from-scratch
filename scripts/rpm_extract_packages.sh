@@ -17,11 +17,6 @@ if ! command -v faketime &> /dev/null; then
         yum --assumeyes makecache
         yum --assumeyes install libfaketime.x86_64
     fi
-
-    if command -v zypper &> /dev/null; then
-        zypper refresh
-        zypper install --no-confirm libfaketime
-    fi
 fi
 
 function extract() {
@@ -62,10 +57,19 @@ function store_package_data() {
             --noscripts \
             --notriggers
 
+    # This is done to avoid "error: failed to replace old database with new
+    # database! rpm rebuilddb", which strace reveals to be "Invalid
+    # cross-device link" error.
+    cp --recursive /tmp/copy/var/lib/rpm /tmp/copy/var/lib/rpm_new
+    rm --force /tmp/copy/var/lib/rpm_new/.rpm.lock
+
     faketime @0 \
         rpm \
-            --dbpath /tmp/copy/var/lib/rpm \
+            --dbpath /tmp/copy/var/lib/rpm_new \
             --rebuilddb
+
+    rm --force --recursive /tmp/copy/var/lib/rpm
+    mv /tmp/copy/var/lib/rpm_new /tmp/copy/var/lib/rpm
 }
 
 function process() {
