@@ -1,0 +1,20 @@
+FROM localhost/distroless-from-scratch/cc-alpine3:latest as base
+
+FROM localhost/distroless-from-scratch/builder-alpine3:latest AS builder
+RUN mkdir --parents /tmp/copy
+COPY --from=base /packages.txt /tmp/copy/
+RUN : \
+    && /opt/apk_download_packages.sh \
+        java-cacerts \
+        openjdk21-jre-headless \
+        zlib \
+    && /opt/tar_extract_packages.sh \
+    && /opt/link_java_executable.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/cc-alpine3:latest
+COPY --from=builder /tmp/copy ./
+ENTRYPOINT ["/usr/bin/java", "-jar"]
+ENV JAVA_VERSION=21
+ENV LANG=C.UTF-8

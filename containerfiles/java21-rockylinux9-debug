@@ -1,0 +1,17 @@
+FROM localhost/distroless-from-scratch/java-rockylinux9:21 as base
+
+FROM localhost/distroless-from-scratch/builder-rockylinux9:latest AS builder
+RUN mkdir --parents /tmp/copy/var/lib/rpm
+COPY --from=base /packages.txt /tmp/copy/
+COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
+RUN : \
+    && /opt/add_busybox.sh \
+    && /opt/yum_download_packages.sh \
+        java-21-openjdk-devel.x86_64 \
+        java-21-openjdk-jmods.x86_64 \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/java-rockylinux9:21
+COPY --from=builder /tmp/copy ./

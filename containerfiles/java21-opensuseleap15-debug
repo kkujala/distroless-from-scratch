@@ -1,0 +1,18 @@
+FROM localhost/distroless-from-scratch/java-opensuseleap15:21 as base
+
+FROM localhost/distroless-from-scratch/builder-opensuseleap15:latest AS builder
+RUN mkdir --parents /tmp/copy/var/lib/rpm
+COPY --from=base /packages.txt /tmp/copy/
+COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
+RUN : \
+    && /opt/zypper_download_packages.sh \
+        busybox-static \
+        java-21-openjdk-devel \
+        java-21-openjdk-jmods \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/link_busybox.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/java-opensuseleap15:21
+COPY --from=builder /tmp/copy ./

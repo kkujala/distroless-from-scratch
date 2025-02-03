@@ -1,0 +1,25 @@
+FROM localhost/distroless-from-scratch/cc-opensuseleap15:latest as base
+
+FROM localhost/distroless-from-scratch/builder-opensuseleap15:latest AS builder
+RUN mkdir --parents /tmp/copy/var/lib/rpm
+COPY --from=base /packages.txt /tmp/copy/
+COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
+RUN : \
+    && /opt/zypper_download_packages.sh \
+        java-17-openjdk-headless \
+        libbz2-1 \
+        libfreetype6 \
+        libjpeg8 \
+        liblcms2-2 \
+        libpng16-16 \
+        libz1 \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/link_java_executable.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
+    && :
+
+FROM localhost/distroless-from-scratch/cc-opensuseleap15:latest
+COPY --from=builder /tmp/copy ./
+ENTRYPOINT ["/usr/bin/java", "-jar"]
+ENV JAVA_VERSION=17
+ENV LANG=C.UTF-8

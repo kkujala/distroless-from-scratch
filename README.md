@@ -73,7 +73,7 @@ The following base container image types are available.
   - C++ standard library
 
 - `java` is based on `cc` container image, and has
-  - OpenJDK 8, 11, or 17
+  - OpenJDK 8, 11, 17, or 21
   - library dependencies
   - CA certificates for Java
 
@@ -107,6 +107,10 @@ The following tags are available.
 
 - `17`, `17-debug`, `17-nonroot`, `17-debug-nonroot`
   - The Java container images are tagged with the version number 17 and the
+    other options are appended to it.
+
+- `21`, `21-debug`, `21-nonroot`, `21-debug-nonroot`
+  - The Java container images are tagged with the version number 21 and the
     other options are appended to it.
 
 ## Build instructions

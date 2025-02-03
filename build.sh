@@ -21,6 +21,8 @@ images=(
     base
     cc
     java11
+    java17
+    java21
     java8
     nodejs
 )
@@ -133,7 +135,7 @@ for os in "${oss[@]}"; do
                 continue
             fi
 
-            if [[ "${image}" =~ java(8|11|17) ]]; then
+            if [[ "${image}" =~ java(8|11|17|21) ]]; then
                 version="${BASH_REMATCH[1]}"
                 image_name="${image/${version}/}"
                 if [[ "${tag}" != latest ]]; then
