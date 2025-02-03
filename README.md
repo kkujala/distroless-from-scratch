@@ -23,13 +23,13 @@ distribution, hence the quotes.
 
 ## from scratch?
 
-The `scratch` container image is reserved and minimal image for building base
+The `scratch` container image is a reserved and minimal image for building base
 container images. The concept is described well in
 [here](https://docs.docker.com/develop/develop-images/baseimages/#create-a-simple-parent-image-using-scratch).
 
 In the `scratch` image the filesystem is initially completely empty. In the
-`dockerfiles` a multistage build is used to fetch the OS packages, to extract
-the files in them, and to build package metadata.
+`containerfiles` a multistage build is used to fetch the OS packages, to
+extract the files in them, and to build package metadata.
 
 The multistage build is described in this
 [page](https://docs.docker.com/develop/develop-images/multistage-build).
@@ -53,6 +53,9 @@ The following OS distributions are available.
 
 The following base container image types are available.
 
+- `builder` is an image that has all the tools and scripts needed to build the
+  containerfiles. It is meant for building only and not for production use.
+
 - `static` is based on `scratch`, and has
   - basic files for the OS
   - CA certificates
@@ -70,7 +73,7 @@ The following base container image types are available.
   - C++ standard library
 
 - `java` is based on `cc` container image, and has
-  - either OpenJDK 8 or 11
+  - OpenJDK 8, 11, or 17
   - library dependencies
   - CA certificates for Java
 
@@ -100,6 +103,10 @@ The following tags are available.
 
 - `11`, `11-debug`, `11-nonroot`, `11-debug-nonroot`
   - The Java container images are tagged with the version number 11 and the
+    other options are appended to it.
+
+- `17`, `17-debug`, `17-nonroot`, `17-debug-nonroot`
+  - The Java container images are tagged with the version number 17 and the
     other options are appended to it.
 
 ## Build instructions
