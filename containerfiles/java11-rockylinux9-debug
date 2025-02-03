@@ -1,22 +1,16 @@
 FROM localhost/distroless-from-scratch/java-rockylinux9:11 as base
 
-FROM docker.io/rockylinux:9 AS builder
+FROM localhost/distroless-from-scratch/builder-rockylinux9:latest AS builder
 RUN mkdir --parents /tmp/copy/var/lib/rpm
 COPY --from=base /packages.txt /tmp/copy/
 COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
-COPY \
-    scripts/add_busybox.sh \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/rpm_extract_packages.sh \
-    scripts/yum_download_packages.sh \
-    /tmp/
 RUN : \
-    && /tmp/add_busybox.sh \
-    && /tmp/yum_download_packages.sh \
+    && /opt/add_busybox.sh \
+    && /opt/yum_download_packages.sh \
         java-11-openjdk-devel.x86_64 \
         java-11-openjdk-jmods.x86_64 \
-    && /tmp/rpm_extract_packages.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM localhost/distroless-from-scratch/java-rockylinux9:11

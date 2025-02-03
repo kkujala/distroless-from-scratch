@@ -1,21 +1,16 @@
 FROM localhost/distroless-from-scratch/base-rockylinux9:latest as base
 
-FROM docker.io/rockylinux:9 AS builder
+FROM localhost/distroless-from-scratch/builder-rockylinux9:latest AS builder
 RUN mkdir --parents /tmp/copy/var/lib/rpm
 COPY --from=base /packages.txt /tmp/copy/
 COPY --from=base /var/lib/rpm /tmp/copy/var/lib/rpm
-COPY \
-    scripts/change_timestamps_to_unix_epoch.sh \
-    scripts/rpm_extract_packages.sh \
-    scripts/yum_download_packages.sh \
-    /tmp/
 RUN : \
-    && /tmp/yum_download_packages.sh \
+    && /opt/yum_download_packages.sh \
         libgcc.x86_64 \
         libgomp.x86_64 \
         libstdc++.x86_64 \
-    && /tmp/rpm_extract_packages.sh \
-    && /tmp/change_timestamps_to_unix_epoch.sh \
+    && /opt/rpm_extract_packages.sh \
+    && /opt/change_timestamps_to_unix_epoch.sh \
     && :
 
 FROM localhost/distroless-from-scratch/base-rockylinux9:latest
