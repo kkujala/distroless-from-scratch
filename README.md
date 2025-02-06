@@ -166,20 +166,6 @@ notation.
 In the `Alpine 3` container images the root folder has `packages.txt` which
 lists the package info for the extracted `APK` packages.
 
-### Rocky Linux 9
-
-In the `Rocky Linux 9` container images the root folder has `packages.txt`
-which lists the extracted `RPM` packages. The exception is the `busybox` which
-is a downloaded binary.
-
-The /var/lib/rpm Berkeley DB contains all the installed OS packages except the
-`busybox`. The contents of the database can be listed on a system that has the
-`rpm` command installed.
-
-```bash
-rpm --all --query
-```
-
 ### Debian 12
 
 In the `Debian 12` container images the root folder has `packages.txt` which
@@ -202,6 +188,20 @@ is not extracted from an `RPM` package.
 The /var/lib/rpm Berkeley DB contains all the installed OS packages. The
 contents of the database can be listed on a system that has the `rpm` command
 installed.
+
+```bash
+rpm --all --query
+```
+
+### Rocky Linux 9
+
+In the `Rocky Linux 9` container images the root folder has `packages.txt`
+which lists the extracted `RPM` packages. The exception is the `busybox` which
+is a downloaded binary.
+
+The /var/lib/rpm Berkeley DB contains all the installed OS packages except the
+`busybox`. The contents of the database can be listed on a system that has the
+`rpm` command installed.
 
 ```bash
 rpm --all --query
@@ -280,46 +280,6 @@ can be queried on this [page](https://pkgs.alpinelinux.org/contents).
 
 ```bash
 apk info --who-owns /path/to/file
-```
-
-### Rocky Linux 9
-
-The package repository can be updated with a command.
-
-```bash
-yum --assumeyes makecache
-```
-
-Packages can be searched with a command.
-
-```bash
-yum search package-name
-```
-
-Package requirements can be determined with a command.
-
-```bash
-yum --assumeyes install yum-utils
-repoquery --requires --resolve package-name
-```
-
-Package files can be listed with a command.
-
-```bash
-repoquery --list package-name
-```
-
-Package can be download with a command.
-
-```bash
-yum --assumeyes install yum-utils
-yumdownloader --assumeyes --downloaddir /path/to/directory package-name
-```
-
-Package can be identified for file name with a command.
-
-```bash
-yum provides /path/to/file
 ```
 
 ### Debian 12
@@ -407,6 +367,46 @@ Package can be identified for file name with a command.
 
 ```bash
 zypper search --file-list /path/to/file
+```
+
+### Rocky Linux 9
+
+The package repository can be updated with a command.
+
+```bash
+yum --assumeyes makecache
+```
+
+Packages can be searched with a command.
+
+```bash
+yum search package-name
+```
+
+Package requirements can be determined with a command.
+
+```bash
+yum --assumeyes install yum-utils
+repoquery --requires --resolve package-name
+```
+
+Package files can be listed with a command.
+
+```bash
+repoquery --list package-name
+```
+
+Package can be download with a command.
+
+```bash
+yum --assumeyes install yum-utils
+yumdownloader --assumeyes --downloaddir /path/to/directory package-name
+```
+
+Package can be identified for file name with a command.
+
+```bash
+yum provides /path/to/file
 ```
 
 ## Considerations

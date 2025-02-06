@@ -8,6 +8,9 @@ RUN : \
         setup.noarch \
         tzdata.noarch \
     && /opt/rpm_extract_packages.sh \
+    && /opt/yum_install_packages.sh \
+        ca-certificates.noarch \
+    && /opt/copy_ca_certificates.sh \
     && /opt/add_users_and_groups.sh \
     && /opt/add_nonroot.sh \
     && /opt/add_nsswitch.sh \
@@ -16,6 +19,6 @@ RUN : \
 
 FROM scratch
 COPY --from=builder /tmp/copy ./
-ENV SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
+ENV SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
 USER 0:0
 WORKDIR /
