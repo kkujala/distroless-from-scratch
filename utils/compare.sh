@@ -87,24 +87,22 @@ function process() {
     (
         cd "${image_path}"
         "${tool}" save --output=content.tar "${image}"
-        tar --extract --file content.tar
-        (
-            mkdir --parents all
-            cd all
-            find .. \
-                -mindepth 2 \
-                -maxdepth 2 \
-                -name "layer.tar" \
-                -exec tar --extract --file {} \;
-            touch --date=@0 .
+        tar --extract --file=content.tar
+
+        mapfile -t layers < <(
+            cat manifest.json | jq --raw-output '.[].Layers.[]'
         )
-        (
-            mkdir --parents last
-            cd last
-            last_layer="../$(sed 's/.*"\([^"]\+\)".*/\1/' ../manifest.json)"
-            tar --extract --file "${last_layer}"
-            touch --date=@0 .
-        )
+
+        mkdir --parents all
+        for layer in "${layers[@]}"; do
+            tar --directory=all --extract --file="${layer}"
+        done
+        touch --date=@0 all
+
+        mkdir --parents last
+        last_layer="${layers[-1]}"
+        tar --directory=last --extract --file="${last_layer}"
+        touch --date=@0 last
     )
 }
 

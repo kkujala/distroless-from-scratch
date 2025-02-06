@@ -121,6 +121,7 @@ The utility scripts require the following tools.
 
 - `bash`
 - `buildah`
+- `jq`
 - `podman`
 - `shellcheck`
 - `tar`
